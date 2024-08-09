@@ -16,7 +16,7 @@ public class BeaconLocation extends DateBaseEntity {
     private Long beaconId;
 
     @ManyToOne
-    @JoinColumn(name = "tunnelId", nullable = false)  // 터널 ID를 참조
+    @JoinColumn(name = "tunnel_id", nullable = false)  // 터널 ID를 참조
     private Tunnel tunnel;
 
     @Column(nullable = false)
