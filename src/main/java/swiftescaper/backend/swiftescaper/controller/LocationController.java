@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import swiftescaper.backend.swiftescaper.domain.Location;
 import swiftescaper.backend.swiftescaper.domain.User;
 import swiftescaper.backend.swiftescaper.domain.Tunnel;
+import swiftescaper.backend.swiftescaper.repository.BeaconLocationRepository;
 import swiftescaper.backend.swiftescaper.repository.LocationRepository;
 import swiftescaper.backend.swiftescaper.repository.UserRepository;
 import swiftescaper.backend.swiftescaper.repository.TunnelRepository;
@@ -29,6 +30,9 @@ public class LocationController {
 
     @Autowired
     private TunnelRepository tunnelRepository;
+
+    @Autowired
+    private BeaconLocationRepository beaconLocationRepository;
 
     @PostMapping("/send")
     public String sendNotification(@Parameter(description = "Latitude of the location", required = true) @RequestParam Double lat,
