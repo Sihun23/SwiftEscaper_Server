@@ -10,22 +10,11 @@ import swiftescaper.backend.swiftescaper.domain.common.DateBaseEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Location extends DateBaseEntity {
+public class User extends DateBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "tunnel_id", nullable = false)
-    private Tunnel tunnel;
-
-    @Column(nullable = false)
-    private Double lat;
-
-    @Column(nullable = false)
-    private Double lng;
+    @Column(nullable = false, unique = true)
+    private String phoneNumber;
 }

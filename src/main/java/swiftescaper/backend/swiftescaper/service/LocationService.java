@@ -12,11 +12,11 @@ import swiftescaper.backend.swiftescaper.repository.LocationRepository;
 @RequiredArgsConstructor
 public class LocationService {
     private final LocationRepository locationRepository;
-    public void sendLocation(Double lat, Double lng, Long tunnalId, Long userId) {
+    public void sendLocation(Double lat, Double lng, Long tunnelId, Long userId) {
         Location location = Location.builder()
                 .lat(lat)
                 .lng(lng)
-                .tunnalId(tunnalId)
+                .tunnelId(tunnelId)
                 .userId(userId)
                 .build();
 
