@@ -24,10 +24,10 @@ jobs:
         run: ./gradlew build -x test
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUD_IMAGE_NAME }}:latest
+        run: docker build . --file Dockerfile --tag kohyunchoel/swiftescaper-backend:latest
 
       - name: Login to Docker Hub using Access Token
         run: echo "${{ secrets.DOCKERHUD_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUD_USERNAME }} --password-stdin
 
       - name: Push the Docker image
-        run: docker push ${{ secrets.DOCKERHUD_IMAGE_NAME }}:latest
+        run: docker push kohyunchoel/swiftescaper-backend:latest
