@@ -1,4 +1,4 @@
-package swiftescaper.backend.swiftescaper.domain;
+package swiftescaper.backend.swiftescaper.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +15,7 @@ public class Location extends DateBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

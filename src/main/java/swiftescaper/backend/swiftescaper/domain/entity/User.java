@@ -1,4 +1,4 @@
-package swiftescaper.backend.swiftescaper.domain;
+package swiftescaper.backend.swiftescaper.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,5 +16,10 @@ public class User extends DateBaseEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    private String token;
+
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 }
+
+//유저 로그인 만들어야함

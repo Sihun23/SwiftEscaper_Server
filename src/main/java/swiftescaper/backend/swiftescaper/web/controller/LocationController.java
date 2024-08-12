@@ -1,4 +1,4 @@
-package swiftescaper.backend.swiftescaper.controller;
+package swiftescaper.backend.swiftescaper.web.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import swiftescaper.backend.swiftescaper.domain.Location;
-import swiftescaper.backend.swiftescaper.domain.User;
-import swiftescaper.backend.swiftescaper.domain.Tunnel;
+import swiftescaper.backend.swiftescaper.domain.entity.Location;
+import swiftescaper.backend.swiftescaper.domain.entity.User;
+import swiftescaper.backend.swiftescaper.domain.entity.Tunnel;
 import swiftescaper.backend.swiftescaper.repository.BeaconLocationRepository;
 import swiftescaper.backend.swiftescaper.repository.LocationRepository;
 import swiftescaper.backend.swiftescaper.repository.UserRepository;
