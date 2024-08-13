@@ -23,6 +23,12 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
     private TunnelRepository tunnelRepository;
 
     @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        // Test : WebSocket 연결 성공여부
+        System.out.println("WebSocket 연결 성공: " + session.getId());
+    }
+
+    @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         // 클라이언트로부터 받은 메시지 JSON(lat, lng, tunnelId, token)
         String payload = message.getPayload();
@@ -51,9 +57,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
         locationRepository.save(location);
 
-        // DB에 잘 저장됐는지 Test 코드
-        System.out.println("Saved location - X: " + lat + ", Y: " + lng + ", TunnelId: " + tunnelId + ", Token: " + token);
-
-
+        // Test : DB 저장 확인
+        System.out.println("데이터베이스에 저장된 위치 정보 - X: " + lat + ", Y: " + lng + ", TunnelId: " + tunnelId + ", Token: " + token);
     }
 }
