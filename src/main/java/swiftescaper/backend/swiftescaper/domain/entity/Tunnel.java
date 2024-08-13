@@ -1,4 +1,4 @@
-package swiftescaper.backend.swiftescaper.domain;
+package swiftescaper.backend.swiftescaper.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
