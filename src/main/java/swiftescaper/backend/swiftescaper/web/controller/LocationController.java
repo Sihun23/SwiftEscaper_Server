@@ -29,7 +29,7 @@ public class LocationController {
     @Autowired
     private BeaconLocationRepository beaconLocationRepository;
 
-    @PostMapping("/send")
+    @PostMapping("/send111")
     public String sendNotification(@Parameter(description = "Latitude of the location", required = true) @RequestParam Double lat,
                                    @Parameter(description = "Longitude of the location", required = true) @RequestParam Double lng,
                                    @Parameter(description = "ID of the tunnel", required = true) @RequestParam Long tunnelId,

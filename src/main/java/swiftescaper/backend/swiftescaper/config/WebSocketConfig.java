@@ -9,7 +9,6 @@ import swiftescaper.backend.swiftescaper.service.LocationWebSocketHandler;
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
-
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new LocationWebSocketHandler(), "/location/send").setAllowedOrigins("*");

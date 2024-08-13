@@ -3,6 +3,7 @@ package swiftescaper.backend.swiftescaper.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import swiftescaper.backend.swiftescaper.domain.entity.Location;
 import swiftescaper.backend.swiftescaper.domain.entity.Tunnel;
@@ -21,6 +22,11 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private TunnelRepository tunnelRepository;
+
+    @Override
+    public  void afterConnectionEstablished(WebSocketSession session) {
+        System.out.println("WebSocket : " + session.getId());
+    }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
