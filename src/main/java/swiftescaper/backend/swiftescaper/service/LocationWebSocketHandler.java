@@ -1,6 +1,7 @@
 package swiftescaper.backend.swiftescaper.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
@@ -13,19 +14,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
+@Component
 public class LocationWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private LocationRepository locationRepository;
-
     @Autowired
     private TunnelRepository tunnelRepository;
 
     @Override
-    public  void afterConnectionEstablished(WebSocketSession session) {
-        System.out.println("WebSocket : " + session.getId());
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        // Test : WebSocket 연결 성공여부
+        System.out.println("WebSocket 연결 성공: " + session.getId());
     }
 
     @Override
@@ -44,8 +46,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         String token = (String) locationData.get("fcmToken");
 
         // Tunnel 엔티티 가져오기
-        Tunnel tunnel = tunnelRepository.findById(tunnelId).orElseThrow(() ->
-                new IllegalArgumentException("Invalid tunnel ID: " + tunnelId));
+        Tunnel tunnel = tunnelRepository.findTunnelById(tunnelId);
 
         // Location 엔티티 생성 및 데이터베이스에 저장
         Location location = Location.builder()
@@ -55,11 +56,16 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                 .tunnel(tunnel)
                 .build();
 
-        locationRepository.save(location);
+        if (locationRepository.existsLocationByTokenAndTunnel(token, tunnel)) {
+            Location location1 = locationRepository.findLocationByTokenAndTunnel(token, tunnel);
+            location.setLat(lat);
+            location.setLng(lng);
+            locationRepository.save(location1);
+        } else {
+            locationRepository.save(location);
+        }
 
-        // DB에 잘 저장됐는지 Test 코드
-        System.out.println("Saved location - X: " + lat + ", Y: " + lng + ", TunnelId: " + tunnelId + ", Token: " + token);
-
-
+        // Test : DB 저장 확인
+        System.out.println("데이터베이스에 저장된 위치 정보 - X: " + lat + ", Y: " + lng + ", TunnelId: " + tunnelId + ", Token: " + token);
     }
 }
