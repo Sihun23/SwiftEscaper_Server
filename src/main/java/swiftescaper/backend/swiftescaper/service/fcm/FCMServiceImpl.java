@@ -1,4 +1,4 @@
-package swiftescaper.backend.swiftescaper.service;
+package swiftescaper.backend.swiftescaper.service.fcm;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
@@ -6,8 +6,8 @@ import com.google.firebase.messaging.Notification;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FCMService {
-    public void sendNotification(String token, String title, String body) {
+public class FCMServiceImpl implements FCMService{
+    public Void sendNotification(String token, String title, String body) {
         Notification notification = Notification.builder()
                 .setTitle(title)
                 .setBody(body)
@@ -22,7 +22,10 @@ public class FCMService {
             String response = FirebaseMessaging.getInstance().send(message);
             System.out.println("Successfully sent message: " + response);
         } catch (Exception e) {
+            System.err.println("Error sending FCM message: " + e.getMessage());
             e.printStackTrace();
         }
+
+        return null;
     }
 }

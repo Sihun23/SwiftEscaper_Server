@@ -9,8 +9,7 @@ import swiftescaper.backend.swiftescaper.apiPayload.code.ErrorReasonDTO;
 @Getter
 @AllArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
-    PREFER_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "PREFER2001", "선호 카테고리가 없습니다."),
-
+    NOTIFICATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "NOTI2002", "알람 전송 실패")
     ;
 
     private final HttpStatus httpStatus;
