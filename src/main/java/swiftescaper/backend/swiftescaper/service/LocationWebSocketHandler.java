@@ -58,8 +58,8 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
         if (locationRepository.existsLocationByTokenAndTunnel(token, tunnel)) {
             Location location1 = locationRepository.findLocationByTokenAndTunnel(token, tunnel);
-            location.setLat(lat);
-            location.setLng(lng);
+            location1.setLat(lat);
+            location1.setLng(lng);
             locationRepository.save(location1);
         } else {
             locationRepository.save(location);
