@@ -1,4 +1,4 @@
-package swiftescaper.backend.swiftescaper.domain;
+package swiftescaper.backend.swiftescaper.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,13 +10,16 @@ import swiftescaper.backend.swiftescaper.domain.common.DateBaseEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class BeaconLocation extends DateBaseEntity {
+public class Location extends DateBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long beaconId;
+    private Long id;
+
+    @Column(nullable = false)
+    private String token;
 
     @ManyToOne
-    @JoinColumn(name = "tunnel_id", nullable = false)  // 터널 ID를 참조
+    @JoinColumn(name = "tunnel_id", nullable = false)
     private Tunnel tunnel;
 
     @Column(nullable = false)

@@ -16,8 +16,8 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
 
         Info info = new Info()
-                .title("Today Nan API")
-                .description("Today Nan API 명세서")
+                .title("SwiftEscaper API")
+                .description("SwiftEscaper API 명세서")
                 .version("1.0.0");
 
         String jwtSchemeName = "JWT TOKEN";

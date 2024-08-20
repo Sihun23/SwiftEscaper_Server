@@ -17,6 +17,10 @@ public class FirebaseConfig {
     public FirebaseApp firebaseApp() throws IOException {
         ClassPathResource resource = new ClassPathResource("firebase/swiftescaper-firebase-adminsdk-4qpjq-a5af11d0d8.json");
 
+        if (!resource.exists()) {
+            System.out.println(resource);
+        }
+
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
                 .build();
