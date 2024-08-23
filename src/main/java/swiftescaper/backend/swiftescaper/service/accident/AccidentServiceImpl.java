@@ -33,10 +33,10 @@ public class AccidentServiceImpl implements AccidentService{
         accidentRepository.save(accident);
 
         //범위 별로 유저의 위치 탐색 <- 주요 알고리즘 (0~100)
-        List<Location> rangeList = locationRepository.findLocationsWithinDistance(accident.getLat(),
-                                                        accidentDto.getLng(),
+        List<Location> rangeList = locationRepository.findLocationsWithinDistance(
+                                                        accidentDto.getPosition(),
                                                         0D, 100D);
-        System.out.println(rangeList.size());
+        System.out.println("범위내 사용자 수 : "+rangeList.size());
         //범위 조절 해야함
 
         //transport FCM, 사고 정보, 터널, 유저 정보 전달

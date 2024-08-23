@@ -18,13 +18,9 @@ public class Location extends DateBaseEntity {
     @Column(nullable = false)
     private String token;
 
-    @ManyToOne
-    @JoinColumn(name = "tunnel_id", nullable = false)
-    private Tunnel tunnel;
+    @Column(nullable = false)
+    private String tunnel;
 
     @Column(nullable = false)
-    private Double lat;
-
-    @Column(nullable = false)
-    private Double lng;
+    private Double position;
 }

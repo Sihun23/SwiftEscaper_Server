@@ -13,7 +13,6 @@ public class AccidentRequestDto {
     public static class AccidentDto {
         private String tunnel;
         private Integer type;
-        private Double lat;
-        private Double lng;
+        private Double position;
     }
 }

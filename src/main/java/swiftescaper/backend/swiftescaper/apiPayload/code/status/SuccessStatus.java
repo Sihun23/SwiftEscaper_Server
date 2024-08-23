@@ -10,7 +10,8 @@ import swiftescaper.backend.swiftescaper.apiPayload.code.ReasonDTO;
 @AllArgsConstructor
 public enum SuccessStatus implements BaseCode {
     _OK(HttpStatus.OK, "OK200", "성공"),
-    NOTIFICATION_SUCCESS(HttpStatus.OK, "NOTI2001", "알람 전송 성공");
+    NOTIFICATION_SUCCESS(HttpStatus.OK, "NOTI2001", "알람 전송 성공"),
+    FIND_LOCATION_SUCCESS(HttpStatus.OK, "FIND2001", "위치 테이블 불로오기");
 
     private final HttpStatus httpStatus;
     private final String code;

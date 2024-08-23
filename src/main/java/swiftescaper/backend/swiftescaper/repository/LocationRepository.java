@@ -10,19 +10,18 @@ import java.util.List;
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
-    Boolean existsLocationByTokenAndTunnel(String token, Tunnel tunnel);
+    Boolean existsLocationByTokenAndTunnel(String token, String tunnel);
 
-    Location findLocationByTokenAndTunnel(String token, Tunnel tunnel);
+    Location findLocationByTokenAndTunnel(String token, String tunnel);
 
     @Query(value = "SELECT l.*, " +
-            "(6371 * acos(cos(radians(:latitude)) * cos(radians(l.lat)) * cos(radians(l.lng) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(l.lat)))) AS distance " +
+            "abs(l.position - :position) AS distance " +
             "FROM location l " +
             "HAVING distance BETWEEN :minRadius AND :maxRadius " +
             "ORDER BY distance",
             nativeQuery = true)
-    List<Location> findLocationsWithinDistance(@Param("latitude") double latitude,
-                                       @Param("longitude") double longitude,
-                                       @Param("minRadius") double minRadius,
-                                       @Param("maxRadius") double maxRadius);
+    List<Location> findLocationsWithinDistance(@Param("position") double position,
+                                               @Param("minRadius") double minRadius,
+                                               @Param("maxRadius") double maxRadius);
 
 }
