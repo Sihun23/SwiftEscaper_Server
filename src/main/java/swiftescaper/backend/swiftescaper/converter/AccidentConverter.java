@@ -10,8 +10,7 @@ public class AccidentConverter {
     public Accident toAccident(AccidentRequestDto.AccidentDto accidentDto){
         return Accident.builder()
                 .type(AccidentType.fromInt(accidentDto.getType()))
-                .lng(accidentDto.getLng())
-                .lat(accidentDto.getLat())
+                .position(accidentDto.getPosition())
                 .tunnel(accidentDto.getTunnel())
                 .build();
     }

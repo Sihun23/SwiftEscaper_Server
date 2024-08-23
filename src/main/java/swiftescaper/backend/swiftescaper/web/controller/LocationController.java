@@ -2,10 +2,9 @@ package swiftescaper.backend.swiftescaper.web.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import swiftescaper.backend.swiftescaper.apiPayload.ApiResponse;
+import swiftescaper.backend.swiftescaper.apiPayload.code.status.SuccessStatus;
 import swiftescaper.backend.swiftescaper.domain.entity.Location;
 import swiftescaper.backend.swiftescaper.domain.entity.Tunnel;
 import swiftescaper.backend.swiftescaper.repository.BeaconLocationRepository;
@@ -13,40 +12,32 @@ import swiftescaper.backend.swiftescaper.repository.LocationRepository;
 import swiftescaper.backend.swiftescaper.repository.TunnelRepository;
 import swiftescaper.backend.swiftescaper.service.LocationService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/location")
 public class LocationController {
-
-    @Autowired
-    private LocationService locationService;
-
     @Autowired
     private LocationRepository locationRepository;
 
-    @Autowired
-    private TunnelRepository tunnelRepository;
+    @PostMapping("/")
+    public String postLocations(@Parameter(description = "Position of the location", required = true) @RequestParam Double position,
+                                   @Parameter(description = "tunnel", required = true) @RequestParam String tunnel,
+                                   @Parameter(description = "Token of the user", required = true) @RequestParam String token) {
 
-    @Autowired
-    private BeaconLocationRepository beaconLocationRepository;
+        Location location = Location.builder()
+                .position(position)
+                .token(token)
+                .tunnel(tunnel)
+                .build();
 
-    @PostMapping("/send111")
-    public String sendNotification(@Parameter(description = "Latitude of the location", required = true) @RequestParam Double lat,
-                                   @Parameter(description = "Longitude of the location", required = true) @RequestParam Double lng,
-                                   @Parameter(description = "ID of the tunnel", required = true) @RequestParam Long tunnelId,
-                                   @Parameter(description = "ID of the user", required = true) @RequestParam String token) {
+        locationRepository.save(location);
 
-        // 사용자와 터널을 ID로 조회
-        Tunnel tunnel = tunnelRepository.findById(tunnelId).orElseThrow(() -> new IllegalArgumentException("Invalid tunnel ID"));
+        return "위치 저장 성공";
+    }
 
-        // 사용자와 터널을 기준으로 Location 조회
-        if (locationRepository.existsLocationByTokenAndTunnel(token, tunnel)) {
-            Location location = locationRepository.findLocationByTokenAndTunnel(token, tunnel);
-            location.setLat(lat);
-            location.setLng(lng);
-            locationRepository.save(location);
-        } else {
-            locationService.sendLocation(lat, lng, tunnelId, token);
-        }
-        return "Notification sent successfully!";
+    @GetMapping("/")
+    public ApiResponse<List<Location>> getLocations() {
+        return ApiResponse.of(SuccessStatus.FIND_LOCATION_SUCCESS, locationRepository.findAll());
     }
 }

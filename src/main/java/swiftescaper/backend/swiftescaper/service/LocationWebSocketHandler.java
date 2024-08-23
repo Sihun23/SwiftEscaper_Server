@@ -40,32 +40,26 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         Map<String, Object> locationData = objectMapper.readValue(payload, Map.class);
 
         // lat, lng, tunnelId, token 추출
-        Double lat = (Double) locationData.get("lat");
-        Double lng = (Double) locationData.get("lng");
-        Long tunnelId = ((Number) locationData.get("tunnelId")).longValue();
+        Double position = (Double) locationData.get("lat");
+        String tunnel = ((String) locationData.get("tunnelId"));
         String token = (String) locationData.get("fcmToken");
-
-        // Tunnel 엔티티 가져오기
-        Tunnel tunnel = tunnelRepository.findTunnelById(tunnelId);
 
         // Location 엔티티 생성 및 데이터베이스에 저장
         Location location = Location.builder()
-                .lat(lat)
-                .lng(lng)
+                .position(position)
                 .token(token)
                 .tunnel(tunnel)
                 .build();
 
         if (locationRepository.existsLocationByTokenAndTunnel(token, tunnel)) {
             Location location1 = locationRepository.findLocationByTokenAndTunnel(token, tunnel);
-            location1.setLat(lat);
-            location1.setLng(lng);
+            location1.setPosition(position);
             locationRepository.save(location1);
         } else {
             locationRepository.save(location);
         }
 
         // Test : DB 저장 확인
-        System.out.println("데이터베이스에 저장된 위치 정보 - X: " + lat + ", Y: " + lng + ", TunnelId: " + tunnelId + ", Token: " + token);
+        System.out.println("데이터베이스에 저장된 위치 정보 - Position: " + position + ", TunnelId: " + tunnel + ", Token: " + token);
     }
 }

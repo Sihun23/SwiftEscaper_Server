@@ -23,8 +23,5 @@ public class Accident extends DateBaseEntity {
     private String tunnel;
 
     @Column(nullable = false)
-    private Double lat;
-
-    @Column(nullable = false)
-    private Double lng;
+    private Double position;
 }
