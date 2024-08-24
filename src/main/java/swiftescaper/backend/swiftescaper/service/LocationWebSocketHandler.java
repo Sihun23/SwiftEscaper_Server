@@ -38,7 +38,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         Map<String, Object> locationData = objectMapper.readValue(payload, Map.class);
 
         // lat, lng, tunnelId, token 추출
-        Double position = Double.parseDouble(locationData.get("lat").toString());
+        Double position = Double.parseDouble(locationData.get("position").toString());
         String tunnel = locationData.get("tunnelId").toString();
         String token = locationData.get("fcmToken").toString();
 
