@@ -21,8 +21,6 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private LocationRepository locationRepository;
-    @Autowired
-    private TunnelRepository tunnelRepository;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -40,9 +38,11 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         Map<String, Object> locationData = objectMapper.readValue(payload, Map.class);
 
         // lat, lng, tunnelId, token 추출
-        Double position = (Double) locationData.get("lat");
-        String tunnel = ((String) locationData.get("tunnelId"));
-        String token = (String) locationData.get("fcmToken");
+        Double position = Double.parseDouble(locationData.get("lat").toString());
+        String tunnel = locationData.get("tunnelId").toString();
+        String token = locationData.get("fcmToken").toString();
+
+        System.out.println("Received: " + position +","+tunnel +"," +token);
 
         // Location 엔티티 생성 및 데이터베이스에 저장
         Location location = Location.builder()
