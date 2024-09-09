@@ -2,6 +2,7 @@ package swiftescaper.backend.swiftescaper.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
@@ -18,6 +19,8 @@ import java.util.Map;
 public class LocationWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private String token = "";
+    private String tunnel = "";
 
     @Autowired
     private LocationRepository locationRepository;
@@ -39,8 +42,8 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
         // lat, lng, tunnelId, token 추출
         Double position = Double.parseDouble(locationData.get("position").toString());
-        String tunnel = locationData.get("tunnelId").toString();
-        String token = locationData.get("fcmToken").toString();
+        tunnel = locationData.get("tunnelId").toString();
+        token = locationData.get("fcmToken").toString();
 
         System.out.println("Received: " + position +","+tunnel +"," +token);
 
@@ -61,5 +64,12 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
         // Test : DB 저장 확인
         System.out.println("데이터베이스에 저장된 위치 정보 - Position: " + position + ", TunnelId: " + tunnel + ", Token: " + token);
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        // WebSocket 연결이 종료될 때 실행되는 로직
+        System.out.println("WebSocket 연결 종료: " + session.getId() + " 상태: " + status);
+        locationRepository.deleteLocationByTokenAndTunnel(token, tunnel);
     }
 }

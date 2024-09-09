@@ -14,6 +14,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     Location findLocationByTokenAndTunnel(String token, String tunnel);
 
+    Void deleteLocationByTokenAndTunnel(String token,String tunnel);
+
     @Query(value = "SELECT l.*, " +
             "abs(l.position - :position) AS distance " +
             "FROM location l " +
