@@ -10,9 +10,9 @@ import java.util.List;
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
     // 비콘 데이터를 기반으로 위치를 찾기 위한 메소드
-    Boolean existsLocationByTokenAndTunnel(String token, String tunnel);
+    Boolean existsLocationByToken(String token);
 
-    Location findLocationByTokenAndTunnel(String token, String tunnel);
+    Location findLocationByToken(String token);
 
     Void deleteLocationByTokenAndTunnel(String token,String tunnel);
 
@@ -40,5 +40,4 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
                                                   @Param("minRadius") double minRadius,
                                                   @Param("maxRadius") double maxRadius);
 
-    List<Location> findLocationsWithinDistance(Double position, double v, double v1);
 }

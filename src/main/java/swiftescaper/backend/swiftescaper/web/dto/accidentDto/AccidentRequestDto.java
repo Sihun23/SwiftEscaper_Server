@@ -16,5 +16,6 @@ public class AccidentRequestDto {
         private Double position;    // 비콘 기반 상대적 위치
         private Double latitude;    // GPS 기반 위도
         private Double longitude;   // GPS 기반 경도
+        private AccidentSize accidentSize;
     }
 }

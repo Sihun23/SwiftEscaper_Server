@@ -40,7 +40,11 @@ public class AccidentServiceImpl implements AccidentService {
             rangeList = locationRepository.findLocationsWithinDistance(
                     accidentDto.getPosition(),   // 비콘 기반 위치 (터널 내 상대 위치)
                     accidentDto.getTunnel(),     // 터널 ID
-                    0.0, 100.0);                 // 범위: 0 ~ 100 미터
+                    0.0, 100.0);                 // 범위:
+
+            // 범위 내 사용자 수 출력
+            System.out.println("범위 내 사용자 수: " + rangeList.size());
+            // 0 ~ 100 미터
         } else if (accidentDto.getLatitude() != null && accidentDto.getLongitude() != null) {
             // GPS 기반 위치로 유저 검색
             rangeList = locationRepository.findLocationsWithinGPSDistance(
@@ -53,18 +57,21 @@ public class AccidentServiceImpl implements AccidentService {
             return null;
         }
 
-        // 범위 내 사용자 수 출력
-        System.out.println("범위 내 사용자 수: " + rangeList.size());
-
         // 범위 내 유저들에게 FCM 알림 전송
         for (Location rangeUser : rangeList) {
             fcmService.sendNotification(
                     rangeUser.getToken(),
                     accidentDto.getTunnel(), // 터널 정보 전송
-                    AccidentType.fromInt(accidentDto.getType()).toString()  // 사고 타입
+                    AccidentType.fromInt(accidentDto.getType()).toString(),  // 사고 타입
+                    accidentDto.getAccidentSize()
             );
         }
 
         return null;
+    }
+
+    @Override
+    public List<Accident> getAccidnet() {
+        return accidentRepository.findAll();
     }
 }

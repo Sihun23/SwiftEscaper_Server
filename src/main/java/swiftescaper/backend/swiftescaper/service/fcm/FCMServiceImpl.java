@@ -4,10 +4,11 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import org.springframework.stereotype.Service;
+import swiftescaper.backend.swiftescaper.web.dto.accidentDto.AccidentSize;
 
 @Service
 public class FCMServiceImpl implements FCMService{
-    public Void sendNotification(String token, String title, String body) {
+    public Void sendNotification(String token, String title, String body, AccidentSize accidentSize) {
         Notification notification = Notification.builder()
                 .setTitle(title)
                 .setBody(body)

@@ -62,10 +62,12 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                 .tunnel(locationDTO.getTunnel())
                 .build();
 
-        if (locationRepository.existsLocationByTokenAndTunnel(locationDTO.getToken(), locationDTO.getTunnel())) {
+        if (locationRepository.existsLocationByToken(locationDTO.getToken())) {
             // 이미 존재하는 위치 정보 업데이트
-            Location existingLocation = locationRepository.findLocationByTokenAndTunnel(locationDTO.getToken(), locationDTO.getTunnel());
+            Location existingLocation = locationRepository.findLocationByToken(locationDTO.getToken());
             existingLocation.setPosition(locationDTO.getPosition());
+            existingLocation.setLatitude(null);
+            existingLocation.setLongitude(null);
             locationRepository.save(existingLocation);
         } else {
             // 새로운 위치 정보 저장
@@ -85,11 +87,12 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                 .build();
 
         // GPS는 터널 정보가 필요 없으므로 token만을 기준으로 저장
-        if (locationRepository.existsLocationByTokenAndTunnel(locationDTO.getToken(), null)) {
+        if (locationRepository.existsLocationByToken(locationDTO.getToken())) {
             // 이미 존재하는 GPS 위치 정보 업데이트
-            Location existingGPSLocation = locationRepository.findLocationByTokenAndTunnel(locationDTO.getToken(), null);
+            Location existingGPSLocation = locationRepository.findLocationByToken(locationDTO.getToken());
             existingGPSLocation.setLatitude(locationDTO.getLatitude());
             existingGPSLocation.setLongitude(locationDTO.getLongitude());
+            existingGPSLocation.setPosition(null);
             locationRepository.save(existingGPSLocation);
         } else {
             // 새로운 GPS 위치 정보 저장
