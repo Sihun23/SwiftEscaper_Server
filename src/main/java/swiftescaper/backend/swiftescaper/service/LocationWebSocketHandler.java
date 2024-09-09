@@ -93,6 +93,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
             existingGPSLocation.setLatitude(locationDTO.getLatitude());
             existingGPSLocation.setLongitude(locationDTO.getLongitude());
             existingGPSLocation.setPosition(null);
+            existingGPSLocation.setTunnel(null);
             locationRepository.save(existingGPSLocation);
         } else {
             // 새로운 GPS 위치 정보 저장
