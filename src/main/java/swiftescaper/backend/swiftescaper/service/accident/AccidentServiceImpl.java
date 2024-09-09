@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AccidentServiceImpl implements AccidentService{
+public class AccidentServiceImpl implements AccidentService {
 
     private final LocationRepository locationRepository;
     private final AccidentRepository accidentRepository;
@@ -28,23 +28,40 @@ public class AccidentServiceImpl implements AccidentService{
 
     @Override
     public Void controlAccident(AccidentRequestDto.AccidentDto accidentDto) {
-        //save Accident log in DB
-        Accident accident= accidentConverter.toAccident(accidentDto);
+        // 사고 정보를 DB에 저장
+        Accident accident = accidentConverter.toAccident(accidentDto);
         accidentRepository.save(accident);
 
-        //범위 별로 유저의 위치 탐색 <- 주요 알고리즘 (0~100)
-        List<Location> rangeList = locationRepository.findLocationsWithinDistance(
-                                                        accidentDto.getPosition(),
-                                                        0D, 100D);
-        System.out.println("범위내 사용자 수 : "+rangeList.size());
-        //범위 조절 해야함
+        // 범위 별로 유저의 위치 탐색 (0~100 미터 범위)
+        List<Location> rangeList;
 
-        //transport FCM, 사고 정보, 터널, 유저 정보 전달
+        if (accidentDto.getPosition() != null && accidentDto.getTunnel() != null) {
+            // 비콘 기반 위치로 유저 검색
+            rangeList = locationRepository.findLocationsWithinDistance(
+                    accidentDto.getPosition(),   // 비콘 기반 위치 (터널 내 상대 위치)
+                    accidentDto.getTunnel(),     // 터널 ID
+                    0.0, 100.0);                 // 범위: 0 ~ 100 미터
+        } else if (accidentDto.getLatitude() != null && accidentDto.getLongitude() != null) {
+            // GPS 기반 위치로 유저 검색
+            rangeList = locationRepository.findLocationsWithinGPSDistance(
+                    accidentDto.getLatitude(),   // GPS 위도
+                    accidentDto.getLongitude(),  // GPS 경도
+                    0.0, 180.0);                 // 범위: 0 ~ 180
+        } else {
+            // 비콘과 GPS 데이터가 모두 없는 경우
+            log.error("위치 정보가 없습니다. 사고 처리를 중단합니다.");
+            return null;
+        }
+
+        // 범위 내 사용자 수 출력
+        System.out.println("범위 내 사용자 수: " + rangeList.size());
+
+        // 범위 내 유저들에게 FCM 알림 전송
         for (Location rangeUser : rangeList) {
             fcmService.sendNotification(
                     rangeUser.getToken(),
-                    accidentDto.getTunnel(),
-                    AccidentType.fromInt(accidentDto.getType()).toString()
+                    accidentDto.getTunnel(), // 터널 정보 전송
+                    AccidentType.fromInt(accidentDto.getType()).toString()  // 사고 타입
             );
         }
 

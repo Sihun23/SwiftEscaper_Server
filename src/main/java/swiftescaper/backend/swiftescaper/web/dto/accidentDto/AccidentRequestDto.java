@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class AccidentRequestDto {
+
     @Builder
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class AccidentDto {
-        private String tunnel;
-        private Integer type;
-        private Double position;
+        private String tunnel;      // 비콘 기반 터널 ID
+        private Integer type;       // 사고 타입
+        private Double position;    // 비콘 기반 상대적 위치
+        private Double latitude;    // GPS 기반 위도
+        private Double longitude;   // GPS 기반 경도
     }
 }
