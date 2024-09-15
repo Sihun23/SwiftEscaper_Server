@@ -10,6 +10,10 @@ import swiftescaper.backend.swiftescaper.domain.common.DateBaseEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "location", indexes = {
+        @Index(name = "idx_location_tunnel_position", columnList = "tunnel, position"),
+        @Index(name = "idx_location_gps", columnList = "longitude, latitude")
+})
 public class Location extends DateBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

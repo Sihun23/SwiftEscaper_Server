@@ -13,6 +13,7 @@ import swiftescaper.backend.swiftescaper.web.dto.accidentDto.AccidentRequestDto;
 import swiftescaper.backend.swiftescaper.web.dto.accidentDto.AccidentType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -58,14 +59,13 @@ public class AccidentServiceImpl implements AccidentService {
         }
 
         // 범위 내 유저들에게 FCM 알림 전송
-        for (Location rangeUser : rangeList) {
-            fcmService.sendNotification(
-                    rangeUser.getToken(),
-                    accidentDto.getTunnel(), // 터널 정보 전송
-                    AccidentType.fromInt(accidentDto.getType()).toString(),  // 사고 타입
-                    accidentDto.getAccidentSize()
-            );
-        }
+        List<String> tokens = rangeList.stream()
+                .map(Location::getToken)
+                .collect(Collectors.toList());
+
+        fcmService.sendBatchNotification(tokens, accidentDto.getTunnel(),
+                AccidentType.fromInt(accidentDto.getType()).toString(),
+                accidentDto.getAccidentSize());
 
         return null;
     }

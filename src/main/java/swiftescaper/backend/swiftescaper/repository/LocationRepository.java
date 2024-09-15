@@ -17,11 +17,11 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     Void deleteLocationByTokenAndTunnel(String token,String tunnel);
 
     @Query(value = "SELECT l.*, " +
-            "abs(l.position - :position) AS distance " +
+            "l.position - :position AS distance " +
             "FROM location l " +
-            "WHERE l.tunnel = :tunnel " +  // 비콘 기반 위치만 해당
-            "AND abs(l.position - :position) BETWEEN :minRadius AND :maxRadius " +
-            "ORDER BY distance",
+            "WHERE l.tunnel = :tunnel " +
+            "AND (l.position - :position) BETWEEN :minRadius AND :maxRadius " +
+            "ORDER BY abs(l.position - :position)",
             nativeQuery = true)
     List<Location> findLocationsWithinDistance(@Param("position") double position,
                                                @Param("tunnel") String tunnel,
@@ -32,7 +32,9 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     @Query(value = "SELECT l.*, " +
             "ST_Distance_Sphere(POINT(l.longitude, l.latitude), POINT(:longitude, :latitude)) AS distance " +
             "FROM location l " +
-            "WHERE ST_Distance_Sphere(POINT(l.longitude, l.latitude), POINT(:longitude, :latitude)) BETWEEN :minRadius AND :maxRadius " +
+            "WHERE l.longitude BETWEEN :longitude - :longRadius AND :longitude + :longRadius " +
+            "AND l.latitude BETWEEN :latitude - :latRadius AND :latitude + :latRadius " +
+            "AND ST_Distance_Sphere(POINT(l.longitude, l.latitude), POINT(:longitude, :latitude)) BETWEEN :minRadius AND :maxRadius " +
             "ORDER BY distance",
             nativeQuery = true)
     List<Location> findLocationsWithinGPSDistance(@Param("latitude") double latitude,
