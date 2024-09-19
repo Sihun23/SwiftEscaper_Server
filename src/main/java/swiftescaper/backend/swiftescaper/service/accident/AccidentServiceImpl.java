@@ -1,5 +1,6 @@
 package swiftescaper.backend.swiftescaper.service.accident;
 
+import com.mysql.cj.log.Log;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import swiftescaper.backend.swiftescaper.service.fcm.FCMServiceImpl;
 import swiftescaper.backend.swiftescaper.web.dto.accidentDto.AccidentRequestDto;
 import swiftescaper.backend.swiftescaper.web.dto.accidentDto.AccidentType;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,39 +36,37 @@ public class AccidentServiceImpl implements AccidentService {
         Accident accident = accidentConverter.toAccident(accidentDto);
         accidentRepository.save(accident);
 
-        // 범위 별로 유저의 위치 탐색 (0~100 미터 범위)
-        List<Location> rangeList;
+        /**
+         * 비콘, GPS 좌표로 범위 내 유저 필터링
+         */
+        //사고 근처
+        List<Location> rangeList200 = new ArrayList<>(locationRepository.findLocationsWithinDistance(
+                accidentDto.getPosition(),
+                accidentDto.getTunnel(),
+                0.0, 200.0));
 
-        if (accidentDto.getPosition() != null && accidentDto.getTunnel() != null) {
-            // 비콘 기반 위치로 유저 검색
-            rangeList = locationRepository.findLocationsWithinDistance(
-                    accidentDto.getPosition(),   // 비콘 기반 위치 (터널 내 상대 위치)
-                    accidentDto.getTunnel(),     // 터널 ID
-                    0.0, 100.0);                 // 범위:
+        //뒤만
+        List<Location> rangeList400 = new ArrayList<>(locationRepository.findLocationsWithinDistance(
+                accidentDto.getPosition(),
+                accidentDto.getTunnel(),
+                200.0, 400.0));
 
-            // 범위 내 사용자 수 출력
-            System.out.println("범위 내 사용자 수: " + rangeList.size());
-            // 0 ~ 100 미터
-        } else if (accidentDto.getLatitude() != null && accidentDto.getLongitude() != null) {
-            // GPS 기반 위치로 유저 검색
-            rangeList = locationRepository.findLocationsWithinGPSDistance(
-                    accidentDto.getLatitude(),   // GPS 위도
-                    accidentDto.getLongitude(),  // GPS 경도
-                    0.0, 180.0);                 // 범위: 0 ~ 180
-        } else {
-            // 비콘과 GPS 데이터가 모두 없는 경우
-            log.error("위치 정보가 없습니다. 사고 처리를 중단합니다.");
-            return null;
-        }
+        //뒤만
+        List<Location> rangeListTunnel = new ArrayList<>(locationRepository.findLocationsWithinDistance(
+                accidentDto.getPosition(),
+                accidentDto.getTunnel(),
+                400.0, 10000.0));
 
-        // 범위 내 유저들에게 FCM 알림 전송
-        List<String> tokens = rangeList.stream()
-                .map(Location::getToken)
-                .collect(Collectors.toList());
+        //GPS 전체
+        List<Location> rangeListGPS = new ArrayList<>(locationRepository.findLocationsWithinGPSDistance(
+                accidentDto.getLatitude(),   // GPS 위도
+                accidentDto.getLongitude(),  // GPS 경도
+                0.0, 1000));           //수정해야함
 
-        fcmService.sendBatchNotification(tokens, accidentDto.getTunnel(),
-                AccidentType.fromInt(accidentDto.getType()).toString(),
-                accidentDto.getAccidentSize());
+        if(!rangeList200.isEmpty())sendFCM(rangeList200, accidentDto,accident.getCreatedAt(), true,200);
+        if(!rangeList400.isEmpty()) sendFCM(rangeList400, accidentDto,accident.getCreatedAt(), true, 400);
+        if(!rangeListTunnel.isEmpty()) sendFCM(rangeListTunnel, accidentDto,accident.getCreatedAt(), true, 1000);
+        if(!rangeListGPS.isEmpty()) sendFCM(rangeListGPS, accidentDto,accident.getCreatedAt(), false, 0);
 
         return null;
     }
@@ -73,5 +74,16 @@ public class AccidentServiceImpl implements AccidentService {
     @Override
     public List<Accident> getAccidnet() {
         return accidentRepository.findAll();
+    }
+
+    public void sendFCM(List<Location> locations,
+                        AccidentRequestDto.AccidentDto accidentDto,
+                        LocalDateTime localDateTime,
+                        Boolean isTunnel,
+                        Integer distance) {
+        List<String> tokens = locations.stream()
+                .map(Location::getToken)
+                .collect(Collectors.toList());
+        fcmService.sendBatchNotification(tokens, accidentDto, localDateTime , isTunnel,distance);
     }
 }

@@ -20,7 +20,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
             "l.position - :position AS distance " +
             "FROM location l " +
             "WHERE l.tunnel = :tunnel " +
-            "AND (l.position - :position) BETWEEN :minRadius AND :maxRadius " +
+            "AND abs(l.position - :position) BETWEEN :minRadius AND :maxRadius " +
             "ORDER BY abs(l.position - :position)",
             nativeQuery = true)
     List<Location> findLocationsWithinDistance(@Param("position") double position,
@@ -32,9 +32,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     @Query(value = "SELECT l.*, " +
             "ST_Distance_Sphere(POINT(l.longitude, l.latitude), POINT(:longitude, :latitude)) AS distance " +
             "FROM location l " +
-            "WHERE l.longitude BETWEEN :longitude - :longRadius AND :longitude + :longRadius " +
-            "AND l.latitude BETWEEN :latitude - :latRadius AND :latitude + :latRadius " +
-            "AND ST_Distance_Sphere(POINT(l.longitude, l.latitude), POINT(:longitude, :latitude)) BETWEEN :minRadius AND :maxRadius " +
+            "WHERE ST_Distance_Sphere(POINT(l.longitude, l.latitude), POINT(:longitude, :latitude)) BETWEEN :minRadius AND :maxRadius " +
             "ORDER BY distance",
             nativeQuery = true)
     List<Location> findLocationsWithinGPSDistance(@Param("latitude") double latitude,
