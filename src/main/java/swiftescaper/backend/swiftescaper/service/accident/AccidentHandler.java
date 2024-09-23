@@ -18,7 +18,7 @@ public class AccidentHandler {
      */
     static {
         // type: 1 (홍수) 에 대한 지침
-        directionMap.put("1-S-near", "침수 위험이 있으니 빠르게 벗어나세요");
+        directionMap.put("1-S-near", "침수 위험이 있으니 진입을 멈추고, 우회하세요.");
         directionMap.put("1-S-mid", "침수 위험이 있으니 빠르게 벗어나세요");
         directionMap.put("1-S-far", "침수 위험이 있으니 빠르게 벗어나세요");
         directionMap.put("1-M-near", "차량 외부로 탈출 후 높은 곳으로 이동하세요");
