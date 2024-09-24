@@ -5,6 +5,8 @@ import com.google.firebase.messaging.Notification;
 import swiftescaper.backend.swiftescaper.web.dto.accidentDto.AccidentRequestDto;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +55,6 @@ public class AccidentHandler {
         directionMap.put("3-L-near", "엔진을 끄고 연기를 피해 유도등을 따라 대비하세요");
         directionMap.put("3-L-mid", "엔진을 끄고 연기를 피해 유도등을 따라 대비하세요");
         directionMap.put("3-L-far", "엔진을 끄고 연기를 피해 유도등을 따라 대비하세요");
-
 
         directionMap.put("3-out", "터널 내로 진입을 멈추고, 우회하세요.");
     }
@@ -114,9 +115,12 @@ public class AccidentHandler {
         else directionKey = accidentDto.getType() + "-" + dis;
         String direction = directionMap.getOrDefault(directionKey, "지침을 찾을 수 없습니다.");
 
+        ZonedDateTime kstDateTime = ZonedDateTime.of(localDateTime, ZoneId.of("UTC"))
+                .withZoneSameInstant(ZoneId.of("Asia/Seoul"));
+
         Notification notification = Notification.builder()
                 .setTitle(direction)
-                .setBody(localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+
+                .setBody(kstDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+
                         "시 경 " +
                         accidentDto.getTunnel() + " " + accidentDto.getPosition() +
                         "m " + size + " " +
