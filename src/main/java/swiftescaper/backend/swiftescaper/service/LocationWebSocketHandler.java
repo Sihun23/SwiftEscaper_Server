@@ -66,6 +66,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
             // 이미 존재하는 위치 정보 업데이트
             Location existingLocation = locationRepository.findLocationByToken(locationDTO.getToken());
             existingLocation.setPosition(locationDTO.getPosition());
+            existingLocation.setTunnel(location.getTunnel());
             existingLocation.setLatitude(null);
             existingLocation.setLongitude(null);
             locationRepository.save(existingLocation);
