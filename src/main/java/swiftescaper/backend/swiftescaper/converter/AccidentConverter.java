@@ -12,6 +12,7 @@ public class AccidentConverter {
                 .type(AccidentType.fromInt(accidentDto.getType()))
                 .position(accidentDto.getPosition())
                 .tunnel(accidentDto.getTunnel())
+                .accidentSize(accidentDto.getAccidentSize())
                 .build();
     }
 }

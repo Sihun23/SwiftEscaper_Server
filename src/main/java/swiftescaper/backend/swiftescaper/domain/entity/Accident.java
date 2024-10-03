@@ -3,6 +3,7 @@ package swiftescaper.backend.swiftescaper.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import swiftescaper.backend.swiftescaper.domain.common.DateBaseEntity;
+import swiftescaper.backend.swiftescaper.web.dto.accidentDto.AccidentSize;
 import swiftescaper.backend.swiftescaper.web.dto.accidentDto.AccidentType;
 
 @Entity
@@ -24,4 +25,8 @@ public class Accident extends DateBaseEntity {
 
     @Column(nullable = false)
     private Double position;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private AccidentSize accidentSize;
 }

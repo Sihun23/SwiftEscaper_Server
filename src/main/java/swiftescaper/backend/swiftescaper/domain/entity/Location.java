@@ -10,6 +10,10 @@ import swiftescaper.backend.swiftescaper.domain.common.DateBaseEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "location", indexes = {
+        @Index(name = "idx_location_tunnel_position", columnList = "tunnel, position"),
+        @Index(name = "idx_location_gps", columnList = "longitude, latitude")
+})
 public class Location extends DateBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +22,15 @@ public class Location extends DateBaseEntity {
     @Column(nullable = false)
     private String token;
 
-    @Column(nullable = false)
+    @Column(nullable = true) // 비콘이 감지될 때만 사용
     private String tunnel;
 
-    @Column(nullable = false)
+    @Column(nullable = true) // 비콘 기반 상대적 위치
     private Double position;
+
+    @Column(nullable = true) // GPS 절대적 위치 - 위도
+    private Double latitude;
+
+    @Column(nullable = true) // GPS 절대적 위치 - 경도
+    private Double longitude;
 }
